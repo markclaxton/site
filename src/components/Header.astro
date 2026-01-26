@@ -1,0 +1,40 @@
+<header>
+  <nav>
+    <ul>
+      <li>Mark Claxton</li>
+      <li>Lead Designer & Developer <span class="label">Current role</span></li>
+      <li>East Yorkshire, UK <span class="label">Location</span></li>
+      <li><a href="mailto:hello@markclaxton.co.uk">hello@markclaxton.co.uk</a> <span class="label">Email</span></li>
+      <li>
+        <button class="mode-toggle">
+          <span class="text">Light</span>
+          <span class="label">Mode</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+</header>
+<script>
+  const root = document.documentElement;
+  const btn = document.querySelector('.mode-toggle');
+  const textEl = btn?.querySelector('.text');
+
+  const getPreferredTheme = () => {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'light' || stored === 'dark') return stored;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  };
+
+  const setTheme = (theme) => {
+    root.setAttribute('data-theme', theme);
+    if (textEl) textEl.textContent = theme === 'dark' ? 'Dark' : 'Light';
+    localStorage.setItem('theme', theme);
+  };
+
+  setTheme(getPreferredTheme());
+
+  btn?.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+  });
+</script>
