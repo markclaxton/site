@@ -1,6 +1,7 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig } from 'astro/config'
+import sitemap from '@astrojs/sitemap'
 
 export default defineConfig({
-  site: 'https://markclaxton.github.io',
-  base: '/site',
+  site: 'https://markclaxton.co.uk',
+  integrations: [sitemap()],
 })

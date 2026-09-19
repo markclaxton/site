@@ -1,40 +1,46 @@
 <header>
-  <nav>
-    <ul>
-      <li>Mark Claxton</li>
-      <li>Lead Designer & Developer <span class="label">Current role</span></li>
-      <li>East Yorkshire, UK <span class="label">Location</span></li>
-      <li><a href="mailto:hello@markclaxton.co.uk">hello@markclaxton.co.uk</a> <span class="label">Email</span></li>
-      <li>
-        <button class="mode-toggle">
-          <span class="text">Light</span>
-          <span class="label">Mode</span>
-        </button>
-      </li>
-    </ul>
-  </nav>
+  <ul>
+    <li><h1>Mark Claxton</h1></li>
+    <li>Lead Designer &amp; Developer <span class="label">Current role</span></li>
+    <li>East Yorkshire, UK <span class="label">Location</span></li>
+    <li><a href="mailto:hello@markclaxton.co.uk">hello@markclaxton.co.uk</a> <span class="label">Email</span></li>
+    <li>
+      <button class="mode-toggle" type="button" aria-label="Switch to dark mode">
+        <span class="text">Light</span>
+        <span class="label">Mode</span>
+      </button>
+    </li>
+  </ul>
 </header>
 <script>
-  const root = document.documentElement;
-  const btn = document.querySelector('.mode-toggle');
-  const textEl = btn?.querySelector('.text');
+  type Theme = 'light' | 'dark'
 
-  const getPreferredTheme = () => {
-    const stored = localStorage.getItem('theme');
-    if (stored === 'light' || stored === 'dark') return stored;
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  };
+  const root = document.documentElement
+  const btn = document.querySelector<HTMLButtonElement>('.mode-toggle')
+  const textEl = btn?.querySelector('.text')
+  const themeColourMetas = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
+  const colours: Record<Theme, string> = { light: '#f6f6f6', dark: '#141414' }
 
-  const setTheme = (theme) => {
-    root.setAttribute('data-theme', theme);
-    if (textEl) textEl.textContent = theme === 'dark' ? 'Dark' : 'Light';
-    localStorage.setItem('theme', theme);
-  };
+  const currentTheme = (): Theme => (root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light')
 
-  setTheme(getPreferredTheme());
+  // The theme itself is applied before paint by the inline script in Layout.astro.
+  // This only reflects it in the button label and the browser chrome colour.
+  const render = (theme: Theme) => {
+    const other: Theme = theme === 'dark' ? 'light' : 'dark'
+    if (textEl) textEl.textContent = theme === 'dark' ? 'Dark' : 'Light'
+    btn?.setAttribute('aria-label', `Switch to ${other} mode`)
+    themeColourMetas.forEach((meta) => meta.setAttribute('content', colours[theme]))
+  }
+
+  render(currentTheme())
 
   btn?.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-    setTheme(current === 'dark' ? 'light' : 'dark');
-  });
+    const next: Theme = currentTheme() === 'dark' ? 'light' : 'dark'
+    root.setAttribute('data-theme', next)
+    render(next)
+    // Persist only an explicit choice, so first-time visitors keep following their OS setting.
+    try {
+      localStorage.setItem('theme', next)
+    } catch {}
+  })
 </script>

@@ -1,31 +1,89 @@
 ---
+import Styles from '../assets/styles/Styles.astro'
+
 interface Props {
   title: string
+  description?: string
+  noindex?: boolean
 }
 
-const { title } = Astro.props
-import Styles from '../assets/styles/Styles.astro'
+const {
+  title,
+  description = 'Mark Claxton is a lead designer and developer at Herd, specialising in building and maintaining custom Shopify themes.',
+  noindex = false,
+} = Astro.props
+
+const canonical = new URL(Astro.url.pathname, Astro.site)
+const ogImage = new URL('/og-image.png', Astro.site)
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
   <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RW5VCV2Y47"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-RW5VCV2Y47');
-</script>
     <meta charset="UTF-8" />
-    <meta name="author" content="Mark Claxton" />
-    <meta name="description" content="Lead designer and developer at Herd, specialising in building and maintaining custom Shopify themes." />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Mark Claxton" />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    <meta name="generator" content={Astro.generator} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Mark Claxton" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Mark Claxton, Lead Designer & Developer" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f6f6" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#141414" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preload" href="/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
+
+    <slot name="head" />
+
+    <!-- Apply the saved theme before first paint so there is no flash. -->
+    <script is:inline>
+      ;(function () {
+        var theme
+        try {
+          theme = localStorage.getItem('theme')
+        } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        }
+        document.documentElement.setAttribute('data-theme', theme)
+      })()
+    </script>
+
+    <!-- Google tag (gtag.js) with Consent Mode. No cookies are set while analytics_storage is denied. -->
+    <script is:inline>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+      })
+      gtag('js', new Date())
+      gtag('config', 'G-RW5VCV2Y47')
+    </script>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-RW5VCV2Y47"></script>
+
     <Styles />
   </head>
   <body>

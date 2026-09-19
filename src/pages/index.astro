@@ -2,28 +2,57 @@
 import Layout from '../layouts/Layout.astro'
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
+
+const clients = [
+  { name: 'Face the Future', url: 'https://www.facethefuture.co.uk/' },
+  { name: 'Spitfire Audio', url: 'https://spitfireaudio.com/' },
+  { name: 'Dock & Bay', url: 'https://dockandbay.com/' },
+  { name: 'PDH Sports', url: 'https://pdhsports.com/' },
+  { name: 'Start Safety', url: 'https://startsafety.uk/' },
+  { name: 'Stephen Webster', url: 'https://www.stephenwebster.com/' },
+  { name: 'Chilly’s', url: 'https://www.chillys.com/' },
+  { name: 'Oceanair', url: 'https://www.oceanairuk.com/' },
+  { name: 'Hairburst', url: 'https://www.hairburst.com/' },
+  { name: 'Ripon Ground Care', url: 'https://ripongroundcare.com/' },
+  { name: 'Admiral Sports', url: 'https://admiralsports.com/' },
+  { name: 'Cobra Sport', url: 'https://cobrasport.com/' },
+]
+
+// Structured data so search engines understand this is a personal site.
+// Add LinkedIn or other profile URLs to sameAs as you like.
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Mark Claxton',
+  url: new URL('/', Astro.site).href,
+  image: new URL('/og-image.png', Astro.site).href,
+  jobTitle: 'Lead Designer & Developer',
+  email: 'mailto:hello@markclaxton.co.uk',
+  worksFor: { '@type': 'Organization', name: 'Herd', url: 'https://herd.io' },
+  address: { '@type': 'PostalAddress', addressRegion: 'East Yorkshire', addressCountry: 'GB' },
+  knowsAbout: ['Shopify', 'Shopify theme development', 'E-commerce', 'Web design', 'Front-end development'],
+  sameAs: ['https://github.com/markclaxton'],
+}
 ---
 
 <Layout title="Mark Claxton - Lead Designer & Developer">
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(person)} />
+  </Fragment>
   <Header />
   <main>
     <section>
-      <h1>Lead designer and developer at <a href="https://herd.io" target="_blank">Herd</a>, specialising in building and maintaining custom Shopify themes.</h1>
+      <p class="intro">
+        Lead designer and developer at <a href="https://herd.io" target="_blank" rel="noopener">Herd<span class="visually-hidden"> (opens in new tab)</span></a>, specialising in building and maintaining custom Shopify themes.
+      </p>
       <div class="clients">
         <h2>Some of the clients I’ve worked with:</h2>
         <ul>
-          <li><a href="https://www.facethefuture.co.uk/" target="_blank">Face the Future</a></li>
-          <li><a href="https://spitfireaudio.com/" target="_blank">Spitfire Audio</a></li>
-          <li><a href="https://dockandbay.com/" target="_blank">Dock & Bay</a></li>
-          <li><a href="https://pdhsports.com/" target="_blank">PDH Sports</a></li>
-          <li><a href="https://startsafety.uk/" target="_blank">Start Safety</a></li>
-          <li><a href="https://www.stephenwebster.com/" target="_blank">Stephen Webster</a></li>
-          <li><a href="https://www.chillys.com/" target="_blank">Chilly’s</a></li>
-          <li><a href="https://www.oceanairuk.com/" target="_blank">Oceanair</a></li>
-          <li><a href="https://www.hairburst.com/" target="_blank">Hairburst</a></li>
-          <li><a href="https://ripongroundcare.com/" target="_blank">Ripon Ground Care</a></li>
-          <li><a href="https://admiralsports.com/" target="_blank">Admiral Sports</a></li>
-          <li><a href="https://cobrasport.com/" target="_blank">Cobra Sport</a></li>
+          {clients.map(({ name, url }) => (
+            <li>
+              <a href={url} target="_blank" rel="noopener">{name}<span class="visually-hidden"> (opens in new tab)</span></a>
+            </li>
+          ))}
         </ul>
       </div>
     </section>
